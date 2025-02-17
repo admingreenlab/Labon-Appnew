@@ -1,0 +1,7 @@
+{
+  "name": "LABON LLC",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
