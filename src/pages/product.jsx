@@ -54,7 +54,7 @@ import Header from './head';
 import 'swiper/css/free-mode';
 import 'swiper/css/thumbs';
 import { FreeMode, Thumbs } from 'swiper/modules';
-
+import { MarginContext } from "../context/Margincontext"
 
 function Product() {
     const { id } = useParams();
@@ -82,6 +82,9 @@ function Product() {
     const [categoryattr, setCategoryattr] = useState([]);
     const [activeIndex, setActiveIndex] = useState(0);
     const [diapcs, setdia] = useState('');
+    const context = useContext(MarginContext);
+    const isInitialMount = useRef(true);
+
 
     const openModal = (index) => {
         setActiveIndex(index); // Set active index based on clicked image
@@ -126,6 +129,17 @@ function Product() {
         }
     };
 
+    // const fetchCategoryData = async () => {
+    //     try {
+    //         const response = await jwtAuthAxios.post(`client/citems?id=${id}`, { marginselect: marginValue });
+    //         setCategoryDetails(response?.data?.data);
+    //         console.log("Request Payload:", { marginselect: marginValue });
+    //     } catch (error) {
+    //         console.error(error?.response?.data?.error);
+    //         toast.error(error?.response?.data?.error);
+    //     }
+    // };
+
 
     const handleAddToCart = async (e, id) => {
         if (isFetching.current) return;
@@ -142,8 +156,8 @@ function Product() {
                 colorstone: colorstone,
                 diaqty: diaqty,
                 centerctwt: centerctwt,
-                sidectwt: sidectwt
-
+                sidectwt: sidectwt,
+                margin: categoryDetails[0]?.marginss,
             };
             setToastMessage('Item added to cart');
             setShowToast(true);
@@ -164,15 +178,21 @@ function Product() {
 
     const [categoryDetails, setCategoryDetails] = useState([]);
     const fetchCategoryData = async () => {
-
         try {
-            const response = await jwtAuthAxios.get(`client/citems?id=${id}`);
+            const response = await jwtAuthAxios.post(`client/citems?id=${id}`, { marginselect: context?.marginValue });
             setCategoryDetails(response?.data?.data);
+
         } catch (error) {
             console.error(error?.response?.data?.error);
             toast.error(error?.response?.data?.error);
         }
     };
+
+    useEffect(() => {
+        if (context?.marginValue) {
+            fetchCategoryData();
+        }
+    }, [context?.marginValue]);
 
 
     const pricereturn = () => {
@@ -182,7 +202,6 @@ function Product() {
 
         return curitem?.finalPrice.toFixed(2);
     }
-
 
 
     const {
@@ -218,6 +237,13 @@ function Product() {
     const [selectedQuality, setSelectedQuality] = useState(diamondGroup[0]);
     const [selectedType, setSelectedType] = useState("14K");
     const [otherImg, setOtherImg] = useState(null);
+    const [marginPolicy, setMarginPolicy] = useState('');
+
+    const marginPolicys = productDetails && productDetails?.category !== undefined && productDetails?.category[0].marginPolicy
+
+    useEffect(() => {
+        setMarginPolicy(marginPolicys);
+    }, [marginPolicys]);
 
     useEffect(() => {
         fetchProductData();
@@ -384,30 +410,16 @@ function Product() {
                                                 freeMode={true}
                                                 watchSlidesProgress={true}
                                                 modules={[FreeMode, Navigation, Thumbs]}
-                                                className="mySwiper twominimgmain">
-                                                <SwiperSlide>
-                                                    {videopath?.length > 0 && (
-                                                        <div className='thumblineimage'>
-                                                            <a href={videopath} target="_black">
-                                                                <div style={{ maxWidth: "30px", height: '30px', objectFit: 'contain', borderRadius: '5px', position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-play-circle" viewBox="0 0 16 16">
-                                                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                                                                        <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445" />
-                                                                    </svg>
-                                                                </div>
-                                                                <img
-                                                                    style={{ marginBottom: "0", borderRadius: '12px' }}
-                                                                    src={`https://pub-dde01f21c9dd4895a14c71b5ea622cb4.r2.dev/imaged/${videopath?.split('d=')[1]}/still.jpg`}
-                                                                />
-                                                            </a>
-                                                        </div>
-                                                    )}
-                                                </SwiperSlide>
+                                                className="mySwiper twominimgmain"
+                                                style={{ display: "flex", flexDirection: "column" }}
+                                            >
+
                                                 {otherUploadImg ? (
                                                     otherUploadImg?.split(",")?.map((img, index) => (
-
                                                         <SwiperSlide>
-                                                            <img src={IMG_PATH + img} key={index} class="twominimg" />
+                                                            <img src={IMG_PATH + img} key={index} class="twominimg"
+
+                                                            />
                                                         </SwiperSlide>
                                                     ))
                                                 ) : (
@@ -416,7 +428,29 @@ function Product() {
                                                         <img src={IMG_PATH + thumbnailImage} class="twominimg" />
                                                     </SwiperSlide>
                                                 )}
+                                                <div style={{ order: "-1" }}>
+                                                    {videopath?.length > 0 && (
+                                                        <div className='thumblineimage'>
+                                                            <a href={videopath} target="_black">
+                                                                <div style={{ maxWidth: "30px", height: '30px', objectFit: 'contain', borderRadius: '5px', position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#959191" class="bi bi-play-circle" viewBox="0 0 16 16">
+                                                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                                                        <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445" />
+                                                                    </svg>
+                                                                </div>
+                                                                <img
+                                                                    style={{ marginBottom: "0", borderRadius: '12px' }}
+                                                                    src={`https://pub-dde01f21c9dd4895a14c71b5ea622cb4.r2.dev/imaged/${videopath?.split('d=')[1]}/still.jpg`}
+                                                                    onError={(e) => {
+                                                                        e.target.onerror = null;
+                                                                        e.target.src = (IMG_PATH + thumbnailImage);
+                                                                    }}
 
+                                                                />
+                                                            </a>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </Swiper>
                                         </div>
                                     </IonCol>
@@ -427,7 +461,8 @@ function Product() {
                                     <IonCol>
                                         <div className='productreduiom' >
                                             <IonChip color="secondary" style={{ fontWeight: '500px' }}>{sku}</IonChip>
-                                            <h5 style={{ textTransform: 'uppercase', fontSize: '15px', color: '#c39862' }}>{name}</h5>
+                                            <h5 style={{ textTransform: 'uppercase', fontSize: '15px', color: '#c39862' }}>{name?.replace(/\s*Cts\s*:.*/, '').trim()}   ({marginPolicy === "HIGH" ? 'FASHION' : marginPolicy === "MEDIUM" ? 'SEMI BASIC' : marginPolicy === "LOW" ? 'BASIC' : ''})</h5>
+                     
                                             <div className="product-detail">
                                                 <div
                                                     className="product-details-title d-flex align-items-center justify-content-between"
@@ -723,7 +758,7 @@ function Product() {
                                                 </div>
                                                 <div className='main-color'>
                                                     <h6>Metal Color</h6>
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '0',justifyContent:'space-between' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '0', justifyContent: 'space-between' }}>
                                                         {["ROSE", "WHITE", "YELLOW"].map((metal) => (
                                                             <label
                                                                 key={metal}
@@ -892,35 +927,43 @@ function Product() {
                                             ></IonTextarea>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                                 <div className='main-coune' style={{ display: 'flex', alignItems: 'center', margin: '10px 0', fontFamily: 'Poppins' }}>
-                                                    <IonButton fill="clear" size='large' slot="icon-only" onClick={decrementCounter}>
-                                                        <div style={{ border: '2px solid rgb(159 153 147)', padding: '8px 13px', borderRadius: ' 5px 0px 0px 5px' }}>
-                                                            <ion-icon name="remove-circle-outline" slot="icon-only" style={{ color: ' black' }}></ion-icon>
+                                                    <button fill="clear" size='large' slot="icon-only" onClick={decrementCounter}>
+                                                        <div style={{ background: '#fff6ec', border: '2px solid rgb(159 153 147)', padding: '8px 13px', borderRadius: ' 5px 0px 0px 5px' }}>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
+                                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                                                <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
+                                                            </svg>
                                                         </div>
-                                                    </IonButton>
+                                                    </button>
                                                     <span style={{
                                                         margin: '0px 2px', width: '40px', textAlign: 'center', color: '#47342b'
                                                     }}>{count}</span>
-                                                    < IonButton fill="clear" size='large' onClick={incrementCounter} >
-                                                        <div style={{ border: '2px solid rgb(159 153 147)', padding: '8px 13px', borderRadius: ' 0px 5px 5px 0px' }}>
-                                                            <ion-icon name="add-circle-outline" slot="icon-only" style={{ color: ' black' }}></ion-icon>
+                                                    < button fill="clear" size='large' onClick={incrementCounter} >
+                                                        <div style={{ background: '#fff6ec', border: '2px solid rgb(159 153 147)', padding: '8px 13px', borderRadius: ' 0px 5px 5px 0px' }}>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                                            </svg>
                                                         </div>
-                                                    </IonButton>
+                                                    </button>
                                                 </div>
-                                                <IonButton
+                                                <button
                                                     id={_id}
                                                     color={checkedItems[_id] ? "danger" : "medium"}
                                                     fill="clear"
+                                                    style={{ background: "transparent" }}
                                                     onClick={() => handleItemCheckboxChange(_id, productDetails)}
                                                 >
                                                     <IonIcon
                                                         slot="icon-only"
                                                         size="large"
+                                                        style={{ fill: "red" }}
                                                         icon={checkedItems[_id] ? heart : heartOutline}
                                                     />
-                                                </IonButton>
+                                                </button>
                                             </div>
                                             <div className='adtocard'>
-                                                <IonButton className='addticaed' expand="block" onClick={(e) => handleAddToCart(e, _id)}>ADD  TO   CART</IonButton>
+                                                <button className='addticaed' expand="block" onClick={(e) => handleAddToCart(e, _id)} style={{ marginTop: '10px', padding: '10px', width: '100%', background: 'rgb(243, 164, 28)', border: '1px solid #00000036' }}>ADD  TO   CART</button>
                                             </div>
 
                                             <div className='disclaimer-main'>

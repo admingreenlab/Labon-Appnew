@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useState, useContext, useRef, useCallback } from 'react';
 import {
     IonButton,
     IonModal,
@@ -39,6 +39,7 @@ import { Navigation, Autoplay } from 'swiper/modules';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFilter } from '../store/actions';
 import { chevronDownCircleOutline } from 'ionicons/icons';
+import {useMargin}  from "../context/Margincontext"
 
 function Category() {
     const { id } = useParams();
@@ -78,8 +79,9 @@ function Category() {
     const [selectedCollection, setSelectedCollection] = useState(
         new URLSearchParams(location.search).get("collection") ? [new URLSearchParams(location.search).get("collection")] : []
     );
-    const [Shapedetails, setShapedetails] = useState([]);
-
+      const [Shapedetails, setShapedetails] = useState([]);
+        const isInitialMount = useRef(true);
+        const { marginValue } = useMargin(); 
     // const fetchCategoryData = async (filterflag) => {
     //     if (isFetching.current) return;
     //     isFetching.current = true;
@@ -137,6 +139,7 @@ function Category() {
                 CategoryFilter,
                 CollectionFilter: selectedCollection,
                 filter: filterDetails,
+                marginselect: marginValue,
             });
             // console.log("Filter sent to backend:", filterDetails);
             setMaxttr(response?.data?.maxAttr);
@@ -321,7 +324,7 @@ function Category() {
             fetchCategoryData();
 
         }
-    }, [id, page, CategoryFilter, selectedCollection, pageSize]);
+    }, [id, page, CategoryFilter, selectedCollection, pageSize, marginValue]);
 
 
     const handleRefresh = async (event) => {
@@ -626,28 +629,51 @@ function Category() {
                             </IonRow>
 
 
-                            <IonButton className='right_bottom_fix' shape='round' size='large' color='secondary' onClick={toggleOffcanvas}>
+                            {/* <IonButton className='right_bottom_fix' shape='round' size='large' color='secondary' onClick={toggleOffcanvas}>
                                 {isOpen ? (
                                     <ion-icon name="close-outline" slot="icon-only"></ion-icon>
                                 ) : (
                                     <ion-icon name="filter-outline" slot="icon-only"></ion-icon>
                                 )}
-                            </IonButton>
+                            </IonButton> */}
+                            <button 
+                                className="right_bottom_fix "
+                                onClick={toggleOffcanvas}
+                                >
+                                {isOpen ? (
+                                    <span className="material-icons">close</span>
+                                ) : (
+                                    <span className="material-icons">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#f3d8b9" class="bi bi-filter" viewBox="0 0 16 16">
+                                        <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5"/>
+                                        </svg>
+                                    </span>
+                                )}
+                            </button>
                             <div className={`offcanvas ${isOpen ? "show" : ""}`}>
                                 <div className="content">
                                     <div color='secondary'>
                                         <div className='topbtn'>
-                                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgb(255 216 174 / 22%)" }}>
+                                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgb(255 216 174 / 22%)",paddingBottom:"10px" }}>
                                                 <div>
                                                     <span>Filter by:</span>
                                                 </div>
                                                 <div>
-                                                    <ion-button onClick={toggleOffcanvas} fill="clear" style={{ width: '100%', color: "#ffd8ae" }} size="large"><ion-icon name="close-outline"></ion-icon></ion-button>
+                                                <button 
+                                                        onClick={toggleOffcanvas} 
+                                                        variant="ghost" 
+                                                        className="w-full text-[#ffd8ae] text-lg"
+                                                        style={{background:"transparent"}}
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#f3d8b9" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                                                        </svg>
+                                                    </button>
                                                 </div>
                                             </div>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                <IonButton onclick={handleReset} style={{ width: '100%', margin: '15px 0', background: '#f3a41c' }} expand="full">Reset</IonButton>
-                                                <IonButton onClick={toggleOffcanvas} style={{ width: '100%', margin: '15px 0', background: '#f3a41c' }} expand="full">Apply</IonButton>
+                                                <button onclick={handleReset} style={{ width: '100%', margin: '15px 0', background: '#f3a41c', padding:'10px' }} expand="full">Reset</button>
+                                                <button onClick={toggleOffcanvas} style={{ width: '100%', margin: '15px 0', background: '#f3a41c', padding:'10px' }} expand="full">Apply</button>
                                             </div>
                                         </div>
                                         <IonAccordionGroup

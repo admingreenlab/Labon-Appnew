@@ -1,5 +1,6 @@
-import React, { useState, useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
+  IonApp,
   IonTabs,
   IonTabBar,
   IonTabButton,
@@ -48,6 +49,7 @@ import './pages/Tab1.css';
 import { IMG_PATH } from "./config";
 import jwtAuthAxios from "./service/jwtAuth";
 import DataProvider from "./context/DataProvider"
+import MarginProvider  from "./context/Margincontext"
 import { addToCart } from "./store/actions";
 import { useDispatch } from "react-redux";
 import useAuthInterceptor from "./service/useAuthInterceptor";
@@ -58,9 +60,11 @@ import Forget from './pages/Forget';
 import Resetpassord from './pages/Resetpassword';
 import Notfound from './pages/Notfound';
 import Dimoandhome from './pages/Dimoandhome';
+import Basket from './pages/Basket';
+import { App as CapacitorApp } from '@capacitor/app';
 
 
-function apps() {
+function App() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [homeDetails, setHomeDetails] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -185,7 +189,7 @@ function apps() {
     finally {
 
       isFetching.current = false;
-  }
+    }
   }
 
   useEffect(() => {
@@ -206,7 +210,8 @@ function apps() {
     const rememberMeChecked = localStorage.getItem('rememberMeChecked') === 'true';
     localStorage.removeItem("token");
     sessionStorage.removeItem("token");
-
+    localStorage.removeItem("marginValue");
+    localStorage.removeItem("selectedMargin");
 
     if (rememberMeChecked) {
 
@@ -276,12 +281,42 @@ function apps() {
     setActiveIndex(activeIndex === index ? null : index);
   };
 
+  const userRole = user?.role;
+  const hasAccess = userRole?.roleName === "Salesman";
+
+   const lastBackPress = useRef(0);
+
+  useEffect(() => {
+    let backListener;
+
+    const setupBackButtonListener = async () => {
+      backListener = await CapacitorApp.addListener('backButton', () => {
+        const now = Date.now();
+        if (now - lastBackPress.current < 2000) {
+          CapacitorApp.exitApp();
+        } else {
+          lastBackPress.current = now;
+          console.log('Press back again to exit');
+        }
+      });
+    };
+
+    setupBackButtonListener();
+
+    return () => {
+      if (backListener && typeof backListener.remove === 'function') {
+        backListener.remove(); // ✅ safely remove
+      }
+    };
+  }, []);
+
   const hideTabBarRoutes = ['/login', '/registerhere', '/forget', '/resetpassword', '/dimhome'];
   return (
     <>
-
+ <IonApp>
       <IonReactRouter>
         <DataProvider>
+        <MarginProvider>
           <IonTabs id="main-content">
             <IonRouterOutlet>
               <Route exact path="/">
@@ -293,7 +328,7 @@ function apps() {
                 render={() => (isAuthenticated ? <Redirect to="/home" /> : <Login setIsAuthenticated={setIsAuthenticated} />)}
                 exact={true}
               />
-                <Route path="/forget" component={Forget} exact={true} />
+              <Route path="/forget" component={Forget} exact={true} />
               {isAuthenticated ? (
                 <>
                   <Route path="/home" component={HomePage} exact={true} />
@@ -311,9 +346,10 @@ function apps() {
                   <Route path="/thanks" component={Thanks} exact={true} />
                   <Route path="/order" component={Orders} exact={true} />
                   <Route path="/ordershow/:id" component={Ordershow} exact={true} />
-                 
                   <Route path="/resetsionic" component={Resetpassord} exact={true} />
                   <Route path="/dimhome" component={Dimoandhome} exact={true} />
+                  <Route path="/basket" component={Basket} exact={true} />
+
                 </>
               ) : (
                 <Redirect to="/login" />
@@ -322,6 +358,7 @@ function apps() {
               {/* <Route render={() => <Notfound />} /> */}
             </IonRouterOutlet>
           </IonTabs>
+          </MarginProvider>
         </DataProvider>
       </IonReactRouter>
       {!hideTabBarRoutes.includes(window.location.pathname) && (
@@ -358,6 +395,8 @@ function apps() {
                   style={{ height: '30px', margin: '0', marginLeft: '0px' }}
                 ></IonImg>
               </div>
+
+
               <div style={{ position: 'relative' }}>
                 <button onClick={toggleDropdown} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: '10px' }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="bisque" class="bi bi-person" viewBox="0 0 16 16">
@@ -415,6 +454,7 @@ function apps() {
                   Logout</a>
               </div>
             )}
+
 
             <div className={`saidmenumain sidebar ${isMenuOpen ? 'open' : ''}`}>
               <IonHeader>
@@ -502,7 +542,7 @@ function apps() {
                                               href={`/category/${categories[0]?._id}?collection=${val?.populateCollection?._id}`}
 
                                             >
-                                              <span className="title" style={{ fontSize: '13px' }}>{val.populateCollection?.name}</span>
+                                              <span className="title" style={{ fontSize: '13px', textTransform: 'uppercase' }}>{val.populateCollection?.name}</span>
                                             </ion-router-link >
                                           </li>
                                         })
@@ -596,7 +636,7 @@ function apps() {
                                               href={`/category/${categories[1]?._id}?collection=${val?.populateCollection?._id}`}
 
                                             >
-                                              <span className="title" style={{ fontSize: '13px' }}>{val.populateCollection?.name}</span>
+                                              <span className="title" style={{ fontSize: '13px', textTransform: 'uppercase' }}>{val.populateCollection?.name}</span>
                                             </ion-router-link >
                                           </li>
                                         })
@@ -690,7 +730,7 @@ function apps() {
                                               href={`/category/${categories[3]?._id}?collection=${val?.populateCollection?._id}`}
 
                                             >
-                                              <span className="title" style={{ fontSize: '13px' }}>{val.populateCollection?.name}</span>
+                                              <span className="title" style={{ fontSize: '13px', textTransform: 'uppercase' }}>{val.populateCollection?.name}</span>
                                             </ion-router-link >
                                           </li>
                                         })
@@ -744,7 +784,7 @@ function apps() {
                                   </div>
                                 </IonCol>
                                 <IonCol size-md="4" size="12">
-                                  <img src="/img/menu6.png" width="100%" alt="img" />
+                                  <img src="/img/menu3.png" width="100%" alt="img" />
                                 </IonCol>
                               </IonRow>
                             </div>
@@ -784,7 +824,7 @@ function apps() {
                                               href={`/category/${categories[4]?._id}?collection=${val?.populateCollection?._id}`}
 
                                             >
-                                              <span className="title" style={{ fontSize: '13px' }}>{val.populateCollection?.name}</span>
+                                              <span className="title" style={{ fontSize: '13px', textTransform: 'uppercase' }}>{val.populateCollection?.name}</span>
                                             </ion-router-link >
                                           </li>
                                         })
@@ -838,7 +878,7 @@ function apps() {
                                   </div>
                                 </IonCol>
                                 <IonCol size-md="4" size="12">
-                                  <img src="/img/menu3.png" width="100%" alt="img" />
+                                  <img src="/img/menu4.png" width="100%" alt="img" />
                                 </IonCol>
                               </IonRow>
                             </div>
@@ -878,7 +918,7 @@ function apps() {
                                               href={`/category/${categories[5]?._id}?collection=${val?.populateCollection?._id}`}
 
                                             >
-                                              <span className="title" style={{ fontSize: '13px' }}>{val.populateCollection?.name}</span>
+                                              <span className="title" style={{ fontSize: '13px', textTransform: 'uppercase' }}>{val.populateCollection?.name}</span>
                                             </ion-router-link >
                                           </li>
                                         })
@@ -941,14 +981,14 @@ function apps() {
                         <div className="accordion-item" >
                           <h2 className="accordion-header">
                             <button
-                              className={`accordion-button ${activeIndex === 6 ? '' : 'collapsed'}`}
+                              className={`accordion-button ${activeIndex === 2 ? '' : 'collapsed'}`}
                               type="button"
-                              onClick={() => handleToggle(6)}
-                              aria-expanded={activeIndex === 6 ? 'true' : 'false'}
+                              onClick={() => handleToggle(2)}
+                              aria-expanded={activeIndex === 2 ? 'true' : 'false'}
                             >
-                              <ion-router-link href={`/category/${categories[6]?._id}`} style={{ color: '#ffe4c4' }}>
+                              <ion-router-link href={`/category/${categories[2]?._id}`} style={{ color: '#ffe4c4' }}>
                                 {
-                                  categories[6]?.name
+                                  categories[2]?.name
                                 }
                               </ion-router-link>
                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#fff" class="bi bi-arrow-down-circle" viewBox="0 0 16 16">
@@ -956,23 +996,23 @@ function apps() {
                               </svg>
                             </button>
                           </h2>
-                          <div className={`accordion-collapse ${activeIndex === 6 ? 'show' : ''}`} >
+                          <div className={`accordion-collapse ${activeIndex === 2 ? 'show' : ''}`} >
                             <div className="accordion-body">
                               <IonRow>
                                 {
-                                  categoryCollection[6]?.populateCollections.length > 0 &&
+                                  categoryCollection[2]?.populateCollections.length > 0 &&
                                   <IonCol size-md="4" size="6">
                                     <h6>SHOP BY STYLE</h6>
                                     <ul className="footer-links">
 
                                       {
-                                        categoryCollection[6]?.populateCollections?.map((val) => {
+                                        categoryCollection[2]?.populateCollections?.map((val) => {
                                           return <li>
                                             <ion-router-link
-                                              href={`/category/${categories[6]?._id}?collection=${val?.populateCollection?._id}`}
+                                              href={`/category/${categories[2]?._id}?collection=${val?.populateCollection?._id}`}
 
                                             >
-                                              <span className="title" style={{ fontSize: '13px' }}>{val.populateCollection?.name}</span>
+                                              <span className="title" style={{ fontSize: '13px', textTransform: 'uppercase' }}>{val.populateCollection?.name}</span>
                                             </ion-router-link >
                                           </li>
                                         })
@@ -985,7 +1025,7 @@ function apps() {
                                   <ul class="footer-links">
                                     <li>
                                       <ion-router-link
-                                        href={`/category/${categories[6]?._id}`}
+                                        href={`/category/${categories[2]?._id}`}
                                       >
                                         <span className="title">All</span>
                                       </ion-router-link>
@@ -993,40 +1033,40 @@ function apps() {
                                   </ul>
                                   <h6 style={{ marginTop: '20px' }}>ALL SHAPE IN</h6>
                                   <div class="shapimggrp">
-                                    <ion-router-link href={`/category/${categories[6]?._id}?shap=asscher`} >
+                                    <ion-router-link href={`/category/${categories[2]?._id}?shap=asscher`} >
                                       <img src="/img/icone-shap/asscher.svg" width="100%" alt="img" class="shap-img" />
                                     </ion-router-link>
-                                    <ion-router-link href={`/category/${categories[6]?._id}?shap=cushion`}>
+                                    <ion-router-link href={`/category/${categories[2]?._id}?shap=cushion`}>
                                       <img src="/img/icone-shap/cushion.svg" width="100%" alt="img" class="shap-img" />
                                     </ion-router-link>
-                                    <ion-router-link href={`/category/${categories[6]?._id}?shap=emerald`}>
+                                    <ion-router-link href={`/category/${categories[2]?._id}?shap=emerald`}>
                                       <img src="/img/icone-shap/emerald.svg" width="100%" alt="img" class="shap-img" />
                                     </ion-router-link>
-                                    <ion-router-link href={`/category/${categories[6]?._id}?shap=heart`}>
+                                    <ion-router-link href={`/category/${categories[2]?._id}?shap=heart`}>
                                       <img src="/img/icone-shap/heart.svg" width="100%" alt="img" class="shap-img" />
                                     </ion-router-link>
-                                    <ion-router-link href={`/category/${categories[6]?._id}?shap=marquise`}>
+                                    <ion-router-link href={`/category/${categories[2]?._id}?shap=marquise`}>
                                       <img src="/img/icone-shap/marquise.svg" width="100%" alt="img" class="shap-img" />
                                     </ion-router-link>
-                                    <ion-router-link href={`/category/${categories[6]?._id}?shap=oval`}>
+                                    <ion-router-link href={`/category/${categories[2]?._id}?shap=oval`}>
                                       <img src="/img/icone-shap/oval.svg" width="100%" alt="img" class="shap-img" />
                                     </ion-router-link>
-                                    <ion-router-link href={`/category/${categories[6]?._id}?shap=pear`}>
+                                    <ion-router-link href={`/category/${categories[2]?._id}?shap=pear`}>
                                       <img src="/img/icone-shap/pear.svg" width="100%" alt="img" class="shap-img" />
                                     </ion-router-link>
-                                    <ion-router-link href={`/category/${categories[6]?._id}?shap=princess`}>
+                                    <ion-router-link href={`/category/${categories[2]?._id}?shap=princess`}>
                                       <img src="/img/icone-shap/princess.svg" width="100%" alt="img" class="shap-img" />
                                     </ion-router-link>
-                                    <ion-router-link href={`/category/${categories[6]?._id}?shap=radiant`}>
+                                    <ion-router-link href={`/category/${categories[2]?._id}?shap=radiant`}>
                                       <img src="/img/icone-shap/radiant.svg" width="100%" alt="img" class="shap-img" />
                                     </ion-router-link>
-                                    <ion-router-link href={`/category/${categories[6]?._id}?shap=round`}>
+                                    <ion-router-link href={`/category/${categories[2]?._id}?shap=round`}>
                                       <img src="/img/icone-shap/round.svg" width="100%" alt="img" class="shap-img" />
                                     </ion-router-link>
                                   </div>
                                 </IonCol>
                                 <IonCol size-md="4" size="12">
-                                  <img src="/img/menu4.png" width="100%" alt="img" />
+                                  <img src="/img/menu6.png" width="100%" alt="img" />
                                 </IonCol>
                               </IonRow>
                             </div>
@@ -1180,16 +1220,17 @@ function apps() {
                   </IonInput>
                 </IonItem>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <IonButton type='submit' style={{ width: '100%', margin: '15px 0 0 0', background: '#f3a41c' }} expand="full">Save</IonButton>
-                  <IonButton onClick={closeModal} style={{ width: '100%', margin: '15px 0 0 0', background: '#f3a41c' }} expand="full">Close</IonButton>
+                  <button type='submit' style={{ width: '100%', margin: '15px 0 0 0', background: '#f3a41c', color: 'white', padding: '10px 10px', }} expand="full">Save</button>
+                  <button onClick={closeModal} style={{ width: '100%', margin: '15px 0 0 0', background: '#f3a41c', color: 'white', padding: '10px 10px', }} expand="full">Close</button>
                 </div>
               </form>
             </div>
           </div>
         )}
       </>
+      </IonApp>
     </>
   );
 }
 
-export default apps; 
+export default App; 

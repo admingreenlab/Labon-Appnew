@@ -46,7 +46,7 @@ const Forget = () => {
             }
         } catch (error) {
             console.error(error?.response?.data || "This User email is not register");
-            setToastMessage(response?.data);
+            setToastMessage(error?.response?.data);
             setShowToast(true);
         } finally {
             setLoading(false);
@@ -92,45 +92,43 @@ const Forget = () => {
                         <IonRow className='loginrow'>
                             <IonCol size-md='6' size-sm='8' size='12'>
                                 <form onSubmit={handleForgotPassword}>
-                                    <div style={{ display: 'flex' }}>
-                                        <IonInput
+                                    <div style={{ display: 'flex', borderBottom:'1px solid #4c3226', alignItems:'center',gap:'10px', paddingBottom:'10px' }}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16" >
+                                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z" />
+                                        </svg>
+                                        <input
                                             name="email"
                                             type="email"
-                                            placeholder="Enter Email"
-                                            color='secondary'
-                                            style={{ background: '#ffdeb300', color: '#000' }}
-                                            slot="start"
+                                            placeholder="Enter Email"   
+                                            style={{ background: '#ffdeb300', color: '#000' ,border:'0', width:'85%', padding:'6px' }}                    
                                             value={forgotPasswordEmail}
-                                            onBlur={(e) => setForgotPasswordEmail(e.target.value)}
+                                            onChange={(e) => setForgotPasswordEmail(e.target.value)}
                                             required
-                                            fill="clear"
-                                        >
-                                            <ion-icon style={{ marginLeft: '15px', marginRight: '27px',  }} color='secondary' slot="start" name="mail"></ion-icon>
-                                        </IonInput>
+                                           
+                                        />
+
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '30px' }}>
-                                        <IonButton
+                                        <button
                                             color='secondary'
                                             type='submit'
                                             expand="full"
-                                            style={{ width: '100%', textTransform: 'uppercase', fontSize: '13px' }}
-                                        // disabled={loading}
+                                            style={{ width: '100%', textTransform: 'uppercase', fontSize: '13px', color: 'white', padding: '10px 10px', background: '#4c3226' }}
+                                            // disabled={loading}
                                         >
                                             {loading ? "Sending Link..." : "Forgot Password"}
-                                        </IonButton>
-                                        <IonButton
-                                           onClick={() => history.push('/login')}
+                                        </button>
+                                        <button
+                                            onClick={() => history.push('/login')}
                                             color='secondary'
                                             type='submit'
                                             expand="full"
-                                            style={{ width: '100%', textTransform: 'uppercase' }}
-                                            
+                                            style={{ width: '100%', textTransform: 'uppercase', color: 'white', padding: '10px 10px', background: '#4c3226' }}
+
                                         >
                                             Back
-                                        </IonButton>
-                                        
+                                        </button>
                                     </div>
-
                                 </form>
                             </IonCol>
                         </IonRow>

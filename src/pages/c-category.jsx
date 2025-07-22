@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef, useCallback } from 'react';
 import {
     IonButton,
     IonModal,
@@ -40,6 +40,7 @@ import { IonIcon } from "@ionic/react";
 import { heartOutline, heart } from "ionicons/icons";
 import { addToCart, showCarts } from "../store/actions";
 import { chevronDownCircleOutline } from 'ionicons/icons';
+import {MarginContext}  from "../context/Margincontext"
 
 function CategoryPage() {
     const { id } = useParams();
@@ -56,13 +57,16 @@ function CategoryPage() {
     const [quotations, setQuotations] = useState([]);
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
+    const context = useContext(MarginContext);
+    const isInitialMount = useRef(true);
+    console.log('MarginContext:', context);
 
     const fetchCategoryData = async () => {
         if (isFetching.current) return;
         isFetching.current = true;
         setLoading(true);
         try {
-            const response = await jwtAuthAxios.get(`client/citems?id=${id}`);
+            const response = await jwtAuthAxios.post(`client/citems?id=${id}`, { marginselect: context?.marginValue });
             const items = response?.data?.data;
             setCategoryDetails(items);
             const initialSelectedMetals = {};
@@ -80,7 +84,18 @@ function CategoryPage() {
             isFetching.current = false;
         }
     };
-
+    
+    useEffect(() => {
+        if (isInitialMount.current) {
+          isInitialMount.current = false; // Mark initial load as done
+          return; // Skip fetch on first render
+        }
+    
+        // Only fetch if marginValue changes AFTER initial load
+        if (context?.marginValue) {
+          fetchCategoryData();
+        }
+      }, [context?.marginValue]);
 
 
     const handleAddToCart = async (item) => {
@@ -302,13 +317,13 @@ function CategoryPage() {
                                                     gap: '5px',
                                                     justifyContent: 'space-between'
                                                 }}>
-                                                    <IonButton fill="clear" size="large" onClick={() => {
+                                                    <button fill="clear" size="large" onClick={() => {
                                                         handleAddToCart(item);
-                                                    }}>
+                                                    }} style={{background:'#fff6ec', margin:'0px 0px 0px 10px'}}>
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="#67686d" class="bi bi-cart3" viewBox="0 0 16 16">
                                                             <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l.84 4.479 9.144-.459L13.89 4zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
                                                         </svg>
-                                                    </IonButton>
+                                                    </button>
                                                     <IonRadioGroup
                                                         value={selectedMetal[item._id]}
                                                         onIonChange={e =>
@@ -323,18 +338,20 @@ function CategoryPage() {
                                                         <IonRadio className='silver' value="WHITE" />
                                                         <IonRadio className='yellow' value="YELLOW" />
                                                     </IonRadioGroup>
-                                                    <IonButton
+                                                    <button
                                                         key={item._id}
                                                         color={checkedItems[item._id] ? "danger" : "medium"}
                                                         fill="clear"
                                                         onClick={() => handleItemCheckboxChange(item._id, item)}
+                                                        style={{background:"transparent"}}
                                                     >
                                                         <IonIcon
                                                             slot="icon-only"
                                                             size="large"
+                                                            style={{fill:"red"}}
                                                             icon={checkedItems[item._id] ? heart : heartOutline}
                                                         />
-                                                    </IonButton>
+                                                    </button>
 
 
                                                 </div>

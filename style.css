@@ -191,7 +191,7 @@ ion-card-title.ion-inherit-color.md.hydrated {
     font-weight: 300;
     font-size: 10px;
     color: #ffffff;
-    padding: 3px 4px;
+    padding: 5px 5px;
     border-radius: 3px;
     font-family: 'Poppins';
 }
@@ -341,7 +341,6 @@ ion-tab-bar.md.hydrated::before {
     color: rgb(255 216 174);
     width: 100%;
     display: block;
-    padding-bottom: 7px;
 }
 
 .button-native {
@@ -523,7 +522,7 @@ button.alert-button.ion-focusable.ion-activatable.sc-ion-alert-md {
 }
 
 .alert-button-inner.sc-ion-alert-md {
-    justify-content: center;
+    justify-content: center !important;
 }
 
 .ctstop {
@@ -580,6 +579,8 @@ div.scrollmenu a:hover {
 :host .ionicon {
     fill: #4c3226 !important;
 }
+
+
 
 .freemlogin1 {
     position: absolute;
@@ -1520,14 +1521,14 @@ ion-radio.radio-label-placement-start.ion-activatable.ion-focusable.hydrated.rad
 }
 
 .right_bottom_fix {
-
     text-transform: uppercase;
     letter-spacing: 1px;
     color: #fff;
     text-align: center;
-    background: rgba(30, 144, 255, 0.6);
+    background: rgb(76 50 38);
     border-radius: 50%;
     animation: shadow-pulse 1.3s infinite;
+    padding: 10px;
 }
 
 @keyframes shadow-pulse {
@@ -1574,7 +1575,7 @@ h5:empty {
 
     .badge {
         font-size: 12px !important;
-        padding: 4px 4px;
+        padding: 5px 5px;
     }
 
     img.twominimg ,.thumblineimage a img{
@@ -1609,7 +1610,8 @@ h5:empty {
 
     .product-imgmini .swiper {
         display: flex ;
-        align-items: center;
+        align-items: baseline !important;
+        flex-direction: row !important;
     }
 
     .swiper .swiper-slide img, .thumblineimage a img {
@@ -1735,8 +1737,7 @@ ion-range::part(tick-active) {
 }
 
 ion-range::part(pin) {
-    display: inline-flex
-    ;
+    display: inline-flex;
         align-items: center;
         justify-content: center;
         background: #4c3226;
@@ -1844,3 +1845,73 @@ p {
     object-fit: contain;
     background: black;
 }
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling:touch;
+  
+  }
+  
+  .table{
+    margin-bottom: 10px;
+  
+  }
+  
+  .tablecss tr th {
+    background-color: #4c3226;
+    color: #fff;
+    font-size: 11pt;
+    font-family: trebuchet MS;
+    border: 1px solid #999999;
+    vertical-align: middle;
+    height: 28px;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 400;
+    min-width:'80px'
+}
+  
+  .tablecss tr td{
+    font-size: 9pt;
+    font-family: trebuchet MS;
+    border: 1px solid #999999;
+    vertical-align: middle;
+    padding-left: 5px;
+    padding-right: 5px;
+    height: 23px;
+    color: #000000;
+  }
+  :host .ionicon {
+    stroke: rgb(103 104 109) !important;
+    fill: rgb(103 104 109) !important;
+}
+.radio-group-wrapper {
+    flex-wrap: wrap;
+    display: flex !important;
+    gap: 10px;
+}
+
+
+input:focus-visible {
+    outline-offset: 0px !important;
+    border: 1px solid rgba(0, 0, 0, 0) !important;
+    border-radius: 0 !important;
+    outline: none !important;
+}
+.marginview {
+    position: fixed;
+    left: 15px;
+    bottom: 65px;
+    background: #4c3226;
+    color: bisque !important;
+    width: auto;
+    height: 19px;
+    border-radius: 20%;
+    z-index: 9999999999999999999999999999999;
+}
+/* .marginview .select-icon.md.hydrated {
+    display: none !important;
+} */

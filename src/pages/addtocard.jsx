@@ -37,6 +37,7 @@ import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { chevronDownCircleOutline } from 'ionicons/icons'
+import { Button } from 'bootstrap';
 
 
 const RadioPage = () => {
@@ -401,17 +402,22 @@ const RadioPage = () => {
                         <IonCardTitle style={{ color: '#4c3226', justifyContent: 'center', display: 'flex', fontSize: '16px' }}>
                           {item?.item?.name}
                         </IonCardTitle>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <div>
-                            <IonButton shape='round' onClick={() => handleEditClick(item)} >
+                            <button onClick={() => handleEditClick(item)} style={{ padding: '10px', borderRadius: '30px' }}>
                               <div key={`${item.item?._id}-${index}`}>
-                                <Ion-Icon name="create-outline" slot="icon-only" size='small' style={{ color: 'red' }}></Ion-Icon>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="green" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                                </svg>
                               </div>
-                            </IonButton>
+                            </button>
                           </div>
-                          <IonButton shape='round' onClick={() => handleRemoveItem(item?.item?._id)}>
-                            <Ion-Icon slot="icon-only" size='small' name="trash-outline" style={{ color: ' red' }}></Ion-Icon>
-                          </IonButton>
+                          <button shape='round' onClick={() => handleRemoveItem(item?.item?._id)} style={{ padding: '10px', borderRadius: '30px' }}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="red" class="bi bi-trash3" viewBox="0 0 16 16">
+                              <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                            </svg>
+                          </button>
                         </div>
                       </div>
                     </IonCol>
@@ -451,8 +457,8 @@ const RadioPage = () => {
                                   {selectedType === "18K" && `18k weight : ${item?.item?.wgt18k?.toFixed(2)}`}
                                 </h5>
                               </div>
-                              <div style={{ display: 'flex', alignItems: 'center', fontFamily: 'Poppins' }}>
-                                <IonButton fill="clear" size='large' slot="icon-only" onClick={() =>
+                              <div style={{ display: 'flex', alignItems: 'center', fontFamily: 'Poppins', marginTop: '20px' }}>
+                                <button onClick={() =>
                                   handleQuantityChange(
                                     item?.item?._id,
                                     index,
@@ -464,13 +470,16 @@ const RadioPage = () => {
                                   disabled={item?.quantity === 1}
                                 >
                                   <div style={{ border: '1px solid #000000b8', padding: '6px 12px', borderRadius: ' 10px 0px 0px 10px' }}>
-                                    <ion-icon name="remove-circle-outline" slot="icon-only" style={{ color: ' black' }}></ion-icon>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
+                                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                      <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
+                                    </svg>
                                   </div>
-                                </IonButton>
+                                </button>
                                 <span style={{
                                   margin: '0px 2px', width: '16px', textAlign: 'center', color: 'black'
                                 }}>{item?.quantity}</span>
-                                < IonButton fill="clear" size='large' onClick={() =>
+                                < button fill="clear" size='large' onClick={() =>
                                   handleQuantityChange(
                                     item?.item?._id,
                                     index,
@@ -481,14 +490,18 @@ const RadioPage = () => {
                                 }
                                 >
                                   <div style={{ border: '1px solid #000000b8', padding: '6px 12px', borderRadius: ' 0px 10px 10px 0px' }}>
-                                    <ion-icon name="add-circle-outline" slot="icon-only" style={{ color: ' black' }}></ion-icon>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                      <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                    </svg>
                                   </div>
-                                </IonButton>
+                                </button>
                               </div>
                               <IonTextarea
+
                                 fill="outline"
                                 placeholder="Type Message"
-                                style={{ color: 'black' }}
+                                style={{ color: 'black', marginTop: '15px' }}
                                 value={item?.message || ''}
                                 onIonChange={(e) => handleTypeMessage(item?.item?._id, e, index)}
                               ></IonTextarea>
@@ -591,7 +604,7 @@ const RadioPage = () => {
                             </div>
                             <div className='main-color'>
                               <h6>Metal Color</h6>
-                              <IonRadioGroup value={selectedMetal} onIonChange={e => setSelectedMetal(e.detail.value)} expand="block" style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '0',justifyContent:'space-between' }}>
+                              <IonRadioGroup value={selectedMetal} onIonChange={e => setSelectedMetal(e.detail.value)} expand="block" style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '0', justifyContent: 'space-between' }}>
                                 {["ROSE", "WHITE", "YELLOW"].map((metal) => (
                                   <IonRadio
                                     key={metal}
@@ -619,44 +632,61 @@ const RadioPage = () => {
                             </div>
                             <div className="diamondcolmin">
                               <h6>Diamond Quality</h6>
-                              <IonRadioGroup
-                                value={selectedQuality}
-                                onIonChange={(e) => setSelectedQuality(e.detail.value)}
-                                style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '0', flexWrap: 'wrap' }}
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '10px',
+                                  margin: '0',
+                                  flexWrap: 'wrap',
+                                }}
                               >
                                 {diamondGroup && diamondGroup.length > 0 ? (
-                                  diamondGroup.map((item, i) => (
+                                  diamondGroup.map((item, i) =>
                                     item.data.map((ele, j) => (
                                       <div
                                         key={`${i}-${j}`}
-                                        className='diamondcol'
-                                        style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '0' }}
+                                        className="diamondcol"
+                                        style={{
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          gap: '10px',
+                                          margin: '0',
+                                        }}
                                       >
-                                        <IonRadio
-                                          value={ele}
-                                          labelPlacement="end"
-                                          color="secondary"
+                                        <label
                                           style={{
                                             color: '#4c3226',
                                             padding: '5px 6px',
-                                            backgroundColor: selectedQuality === ele ? 'rgb(255 230 202)' : 'rgb(255 255 255)',
+                                            backgroundColor:
+                                              selectedQuality === ele ? 'rgb(255 230 202)' : 'rgb(255 255 255)',
                                             cursor: 'pointer',
                                             borderRadius: '24px',
                                             border: '1px solid #a7a7a7',
                                             transition: 'background-color 0.3s ease',
                                             width: '100%',
+                                            display: 'flex',
+                                            justifyContent: 'center',
                                           }}
                                         >
+                                          <input
+                                            type="radio"
+                                            name="diamondQuality"
+                                            value={ele}
+                                            checked={selectedQuality === ele}
+                                            onChange={() => setSelectedQuality(ele)}
+                                            style={{ marginRight: '5px' }}
+                                          />
+
                                           <span>{ele}</span>
-                                        </IonRadio>
+                                        </label>
                                       </div>
                                     ))
-                                  ))
+                                  )
                                 ) : (
                                   <p>No diamond group data available</p>
                                 )}
-                              </IonRadioGroup>
-
+                              </div>
                             </div>
                             <div>
                               <IonCol>
@@ -664,11 +694,11 @@ const RadioPage = () => {
                                   sortedSizes[0]?.sizes &&
                                   sortedSizes[0]?.sizes?.length > 0 && (
                                     <select
-                                   
+
                                       value={selectSize}
                                       placeholder="Select Size"
                                       onChange={(e) => handleSizeChange(e)}
-                                     
+
 
                                       style={{
                                         borderRadius: '10px',
@@ -678,7 +708,7 @@ const RadioPage = () => {
                                         backgroundColor: '#fff6ec',
                                         color: 'rgb(76 50 38)',
                                         padding: '12px 12px',
-                                        margin:'10px -5px'
+                                        margin: '10px -5px'
 
                                       }}
                                       size="small"
@@ -728,8 +758,8 @@ const RadioPage = () => {
                               </IonCol>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                              <IonButton onClick={(e) => handleSaveChanges(e, index)} style={{ width: '100%', margin: '15px 0', background: '#f3a41c' }} expand="full">Save</IonButton>
-                              <IonButton onClick={() => setOpenModalId(null)} style={{ width: '100%', margin: '15px 0', background: '#f3a41c' }} expand="full">Close</IonButton>
+                              <button onClick={(e) => handleSaveChanges(e, index)} style={{ width: '100%', margin: '15px 0', background: '#f3a41c', padding: '10px', }} expand="full">Save</button>
+                              <button onClick={() => setOpenModalId(null)} style={{ width: '100%', margin: '15px 0', background: '#f3a41c', padding: '10px', }} expand="full">Close</button>
                             </div>
                           </div>
                         </div>
@@ -748,10 +778,10 @@ const RadioPage = () => {
               duration={2000}
             />
             <div>
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <IonButton color='secondary' onClick={toggleDropdown}>
+              <div style={{ display: 'flex', justifyContent: 'center', }}>
+                <button color='secondary' style={{ padding: '10px', background: '#4c3226', fontSize: '15px', color: 'white', textTransform: 'uppercase' }} onClick={toggleDropdown}>
                   Quotation Details
-                </IonButton>
+                </button>
               </div>
             </div>
           </div>
@@ -761,8 +791,11 @@ const RadioPage = () => {
         {showDropdown && (
           <div className='profileque'>
             <div className='profileque-1'>
-              <div style={{ fontSize: '24px', justifyContent: 'end', padding: '0', display: 'flex', marginBottom: '-14px', marginRight: '10px', marginTop: '10px' }}>
-                <ion-icon name="close-outline" onClick={closeDropdown} style={{ color: '#000' }}></ion-icon>
+              <div onClick={closeDropdown} style={{ fontSize: '24px', justifyContent: 'end', padding: '0', display: 'flex', marginBottom: '-14px', marginRight: '10px', marginTop: '10px' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                </svg>
               </div>
               <div className="profile" style={{ marginTop: '10px' }}>
                 <IonCardHeader>
@@ -833,10 +866,10 @@ const RadioPage = () => {
                     />
                   </form>
                   <form onSubmit={handleSubmit}>
-                    <IonButton expand="full" type="submit" style={{ background: '#feddb2', letterSpacing: '0.1px', marginTop: '10px', color: '#4c3226', display: 'block' }} >
+                    <button expand="full" type="submit" style={{ background: '#feddb2', padding: '8px', letterSpacing: '0.1px', marginTop: '10px', color: '#4c3226', display: 'block', fontSize: '15px', width: '100%', textTransform: 'uppercase', }} >
                       Confirm Order
-                      <span style={{ fontSize: '10px' }}>(Ask for Quotation)</span>
-                    </IonButton>
+                      <span style={{ fontSize: '12px', marginTop: '5px', textTransform: 'capitalize' }}>(Ask for Quotation)</span>
+                    </button>
                   </form>
                 </IonCardContent>
               </div>

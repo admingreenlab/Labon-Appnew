@@ -10,12 +10,12 @@ const Thanks = () => {
 
         <IonPage style={{justifyContent: 'flex-start'}}>
         <IonHeader>
-                <IonToolbar>
+                {/* <IonToolbar>
                     <IonButtons slot="start">
                         <IonBackButton defaultHref="/" />
                     </IonButtons>
 
-                </IonToolbar>
+                </IonToolbar> */}
             </IonHeader>
             <IonRow>
                 <IonCol>
